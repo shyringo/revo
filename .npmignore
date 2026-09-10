@@ -1,0 +1,11 @@
+.revo/
+.git/
+.github/
+coverage/
+docs/README.zh-CN.md
+docs/architecture.md
+public/
+src/core/runtime.js
+src/web/
+*.log
+.env

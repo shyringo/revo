@@ -1,0 +1,76 @@
+{
+  "name": "revo-harness",
+  "version": "0.1.0",
+  "description": "A terminal-native AI harness that stays continuously awake.",
+  "type": "module",
+  "bin": {
+    "revo": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "dev": "node --watch src/cli.js",
+    "test": "node --test",
+    "check": "node --check src/cli.js && node --test",
+    "prepack": "npm run check",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shyringo/revo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shyringo/revo/issues"
+  },
+  "homepage": "https://github.com/shyringo/revo#readme",
+  "files": [
+    "src/cli.js",
+    "src/core/approvals.js",
+    "src/core/config.js",
+    "src/core/event-store.js",
+    "src/core/kernel.js",
+    "src/core/integrity.js",
+    "src/core/life-runtime.js",
+    "src/core/workgraph.js",
+    "src/core/life-lock.js",
+    "src/core/offline-status.js",
+    "src/core/plugin-loader.js",
+    "src/memory/memory.js",
+    "src/model/openai-compatible.js",
+    "src/sensors/workspace.js",
+    "src/tools/core-tools.js",
+    "src/tools/registry.js",
+    "src/tui/tui.js",
+    "scripts/benchmark.mjs",
+    "docs/constitution.md",
+    "docs/life.md",
+    "docs/plugins.md",
+    "docs/provenance.md",
+    "docs/security.md",
+    "docs/upstream-analysis.md",
+    "docs/validation.md",
+    "docs/vision.md",
+    "docs/workgraph.md",
+    "docs/zh-CN.md",
+    "docs/assets/revo-tui.png",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "config.example.json"
+  ],
+  "keywords": [
+    "ai-agent",
+    "agent-harness",
+    "tui",
+    "autonomous-agent",
+    "deepseek"
+  ],
+  "dependencies": {
+    "@earendil-works/pi-tui": "0.84.3"
+  }
+}
