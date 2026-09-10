@@ -1,0 +1,31 @@
+{
+  "model": {
+    "locked": true,
+    "apiKey": "",
+    "baseUrl": "https://opencode.ai/zen/go/v1",
+    "name": "deepseek-v4-flash",
+    "maxTokens": 4096,
+    "timeoutMs": 120000
+  },
+  "life": {
+    "contextWindowTokens": 1048576,
+    "compactAtTokens": 120000,
+    "eventSafetyLimit": 2000,
+    "maxStepsPerCycle": 8,
+    "recentEvents": 40,
+    "retryMs": 2000
+  },
+  "policy": {
+    "commandTimeoutMs": 30000,
+    "approvalMode": "destructive"
+  },
+  "communication": {
+    "proactiveMinIntervalMs": 300000,
+    "proactiveMaxPerHour": 4
+  },
+  "workgraph": {
+    "maxConcurrency": 3,
+    "maxOutstanding": 12
+  },
+  "plugins": []
+}

@@ -1,0 +1,26 @@
+name: Design proposal
+description: Propose a change to Revo's harness behavior
+title: "proposal: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: relation
+    attributes:
+      label: Relationship created
+      description: What relationship would this create between model, humans, environment, memory, authority, or time?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: User outcome
+      description: What concrete problem or missing experience does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: invariants
+    attributes:
+      label: Invariants and tradeoffs
+      description: Address the awake contract, Constitution, human priority, durability, token cost, and side effects where relevant.
+    validations:
+      required: true

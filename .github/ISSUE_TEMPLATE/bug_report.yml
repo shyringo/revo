@@ -1,0 +1,36 @@
+name: Bug report
+description: Report reproducible incorrect behavior in Revo
+title: "bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed behavior
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the shortest safe sequence that reproduces the issue. Redact credentials and private life data.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Revo version (`revo --version`) or commit
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: OS, terminal, and Node.js version
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Include redacted `revo --doctor` output and relevant event types. Never paste API keys or full private transcripts.
