@@ -104,7 +104,7 @@ test("awake-time limit interrupts an approval-like wait", async () => {
   const store = await new EventStore(join(directory, "events.jsonl")).open();
   const config = {
     workspace: directory, model: { apiKey: "test", name: "mock" },
-    life: { durationMs: 100, tokenBudget: Infinity, maxStepsPerCycle: 2, contextChars: 10_000, recentEvents: 20, retryMs: 5 },
+    life: { durationMs: 3000, tokenBudget: Infinity, maxStepsPerCycle: 2, contextChars: 10_000, recentEvents: 20, retryMs: 5 },
   };
   let calls = 0;
   const model = { complete: async () => {

@@ -11,10 +11,13 @@ test("work cells run as parallel processes of one shared life, not sequential se
   const store = await new EventStore(join(directory, "life.jsonl")).open();
   let active = 0;
   let peak = 0;
+  let releaseAll;
+  const allStarted = new Promise((resolve) => { releaseAll = resolve; });
   const model = { complete: async ({ messages }) => {
     active += 1;
     peak = Math.max(peak, active);
-    await new Promise((resolve) => setTimeout(resolve, 30));
+    if (active === 3) releaseAll();
+    await allStarted;
     active -= 1;
     return { content: `result:${messages[1].content}`, usage: { total_tokens: 2 }, toolCalls: [], rawMessage: { role: "assistant", content: "result" } };
   } };
