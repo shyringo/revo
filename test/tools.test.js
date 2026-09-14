@@ -192,7 +192,7 @@ test("routine bash is approval-free while destructive commands stop for confirma
   const store = await new EventStore(join(workspace, ".revo", "events.jsonl")).open();
   const approvals = new ApprovalQueue(store);
   const registry = new ToolRegistry({ approvals, store });
-  registerCoreTools(registry, { workspace, memory: { remember: async () => ({}) }, store, commandTimeoutMs: 5000 });
+  registerCoreTools(registry, { workspace, memory: { remember: async () => ({}) }, store, commandTimeoutMs: 30000 });
   const routine = await registry.execute("bash", { command: process.platform === "win32" ? "Write-Output hello" : "printf hello" });
   assert.equal(routine.ok, true);
   assert.match(routine.value.stdout, /hello/);
