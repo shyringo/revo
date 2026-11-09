@@ -4,6 +4,19 @@ Revo is a Node.js TUI harness. Launch it and it opens its own work cycle immedia
 
 It is for people who are tired of re-explaining the same project to a fresh session every morning.
 
+**30-second version** — Node.js 22.19+, any OpenAI-compatible key, nothing else:
+
+```bash
+git clone https://github.com/shyringo/revo.git && cd revo
+npm ci --ignore-scripts
+REVO_API_KEY="<your key>" npm start -- --for 5m
+```
+
+No prompt, no REPL: the first cycle starts by itself. Within a minute `LIFE` fills with observations and tool calls,
+the header `cycle` counter climbs, and the agent is already working on something it chose. `:sleep` (or one `Ctrl+C`)
+writes a checksummed snapshot you can reload tomorrow. To check the wiring first without spending tokens:
+`npm link && revo --doctor`.
+
 **What a normal agent doesn’t do:**
 
 - **It starts on its own.** The first cycle opens without a prompt: `observe -> model -> act -> verify -> update self -> next cycle`. An empty queue never ends it.
