@@ -115,7 +115,9 @@ export class Tui {
     clearInterval(this.#timer);
     this.#removeInputListener?.();
     this.#unsubscribeStore?.();
-    this.#runtime.off("status", this.#onStatus);
+    // start() may have failed before it registered this listener (for example on a
+    // terminal-less run); tearing down must never throw over the real failure.
+    if (this.#onStatus) this.#runtime.off("status", this.#onStatus);
     this.#ui?.stop();
   }
 

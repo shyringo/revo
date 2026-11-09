@@ -26,9 +26,11 @@ process.on("unhandledRejection", failCleanly);
 function failCleanly(error) {
   if (fatal) return;
   fatal = true;
-  tui?.close();
   const message = error instanceof Error ? error.message : String(error);
   process.stderr.write(`Revo failed: ${message}\n`);
+  process.stderr.write("Next: run `revo --doctor` to check this installation, or `revo --status` to see what Revo already did.\n");
+  // Report the real failure before any teardown, and never let teardown replace it.
+  try { tui?.close(); } catch { /* the original error is what the human needs to see */ }
   process.exitCode = 1;
   const failStop = setTimeout(() => process.exit(1), 1_000);
   failStop.unref();
@@ -50,7 +52,7 @@ const cli = applyArguments(config, rawArgs);
 if (cli.json && !cli.status && !cli.delivery) throw new Error("--json is only valid with --status or --delivery");
 if (cli.doctor) {
   await runDoctor(config);
-  process.exit(process.exitCode || 0);
+  await endProcessGracefully();
 }
 if (cli.status) {
   await printOfflineStatus(config, cli.json);
@@ -62,7 +64,32 @@ if (cli.delivery) {
 }
 enforceModelLock(config);
 if (!config.model.apiKey) {
-  console.error("NO MIND: set REVO_API_KEY before waking Revo.");
+  console.error([
+    "NO MIND: Revo has no model credential, so it cannot wake.",
+    "",
+    "  Next: give it one and start again:",
+    '    bash/zsh:    export REVO_API_KEY="<your key>"',
+    '    PowerShell:  $env:REVO_API_KEY = "<your key>"',
+    '  ...or put {"model":{"apiKey":"<your key>"}} in your config file (REVO_CONFIG).',
+    "",
+    "  You can read what Revo already did without any credential:",
+    "    revo --status          what this installation is and has done",
+    "    revo --doctor          checks every prerequisite",
+    "    revo --delivery latest the last durable result",
+  ].join("\n"));
+  process.exit(1);
+}
+if (!process.stdin.isTTY || !process.stdout.isTTY) {
+  console.error([
+    "NO SCREEN: Revo's TUI needs an interactive terminal, and stdin/stdout here are piped or redirected.",
+    "",
+    "  Next: run it directly in a terminal window, e.g.  revo --for 5m",
+    "",
+    "  Without a terminal you can still use:",
+    "    revo --doctor          checks every prerequisite",
+    "    revo --status          what this installation is and has done",
+    "    revo --delivery latest the last durable result",
+  ].join("\n"));
   process.exit(1);
 }
 const lifeLock = await acquireLifeLock(config.stateDir);
@@ -233,7 +260,23 @@ async function runDoctor(config) {
     }
   }
   for (const [name, ok, detail] of checks) console.log(`${ok ? "OK" : "FAIL"}  ${name.padEnd(14)} ${detail}`);
-  if (checks.some(([, ok]) => !ok)) process.exitCode = 1;
+  const failed = checks.filter(([, ok]) => !ok).map(([name]) => name);
+  if (failed.length) {
+    process.exitCode = 1;
+    console.error(`\n${failed.length} check${failed.length === 1 ? "" : "s"} failed: ${failed.join(", ")}`);
+    console.error("Revo will not wake until every check passes. Fix the FAIL lines above and run `revo --doctor` again.");
+  }
+}
+
+// process.exit() while provider keep-alive sockets are still closing aborts with a
+// libuv assertion on Windows (src\\win\\async.c). Hold the entry point open and let
+// the event loop drain on its own instead; the guard only fires if something else
+// keeps the loop busy forever.
+function endProcessGracefully() {
+  return new Promise(() => {
+    const guard = setTimeout(() => process.exit(process.exitCode || 0), 5_000);
+    guard.unref();
+  });
 }
 
 function parseDuration(value) {

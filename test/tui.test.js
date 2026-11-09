@@ -124,3 +124,11 @@ test("closing the TUI releases stdin and every live subscription", () => {
   assert.equal(output.listenerCount("resize"), 0);
   assert.equal(unsubscribed, true);
 });
+
+test("closing a TUI that never finished starting does not mask the real failure", () => {
+  const runtime = new EventEmitter();
+  const store = { all: () => [], subscribe: () => () => {} };
+  const tui = new Tui({ runtime, store, approvals: { list: () => [] } });
+  assert.doesNotThrow(() => tui.close());
+  assert.doesNotThrow(() => tui.close());
+});
